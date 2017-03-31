@@ -15,6 +15,7 @@ import InformationScreen from './screens/InformationScreen'
 import SettingScreen from './screens/SettingScreen'
 import TipnTossScreen from './screens/TipntossScreen'
 import Style from './Style';
+import GeolocationExample from './model/getLocation'
 
 class BackgroundImage extends Component {
     render() {
@@ -29,13 +30,40 @@ class BackgroundImage extends Component {
 
 
 class HomeScreen extends Component {
-  static navigationOptions = {
-     header: {
-       visible: false,  }};  
+
+    constructor(props) {
+        super(props);
+        this.state = { latitude: null, longitude: null };
+
+        //Get Latitude and Longitude
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                this.state.latitude = position.coords.latitude;
+                this.state.longitude = position.coords.longitude;
+            },
+            // This line makes geolocation not working. But looks like neccessary.
+            //  (error) => this.setState({ error: error.message }),
+            //  { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
+        )
+    }
+
+    componentWillMount() {
+
+    }
+
+    static navigationOptions = {
+        header: {
+            visible: false,
+        }
+    };
+
     render() {
-            const { navigate } = this.props.navigation;
-            let buttonColor='#6495ed';
+        const { navigate } = this.props.navigation;
+        let buttonColor = '#6495ed';
+
+        console.log(this.state.latitude);
         return (
+
             <BackgroundImage>
                 <View style={Style.buttonContainer}>
                     <View style={Style.buttonContainersub}>
@@ -48,6 +76,7 @@ class HomeScreen extends Component {
                     </View>
                 </View>
             </BackgroundImage>
+
         )
     }
 }
