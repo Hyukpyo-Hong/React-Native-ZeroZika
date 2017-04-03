@@ -18,7 +18,6 @@ import SettingScreen from './screens/SettingScreen'
 import TipnTossScreen from './screens/TipntossScreen'
 
 import Style from './Style';
-
 import getDate from './model/getDate'
 
 
@@ -41,6 +40,8 @@ class HomeScreen extends Component {
             forecast: null, yesterday: null,
             city_name: null,
             loading: true, fetchError: false,
+            a: 'A is not here!',
+
         };
     }
     componentWillMount() {
@@ -57,10 +58,13 @@ class HomeScreen extends Component {
 
 
                     let key = '&key=d05c52f28c5e48d2afc4284807540cb2'
+
                     let startdate = getDate(true);
                     let enddate = getDate(false);
                     let forecasturl = 'https://api.weatherbit.io/v1.0/forecast/3hourly?lat=' + this.state.latitude + '&lon=' + this.state.longitude + key;
                     let yesterdayurl = 'https://api.weatherbit.io/v1.0/history?lat=' + this.state.latitude + '&lon=' + this.state.longitude + key + '&start_date=' + startdate + '&end_date=' + enddate + '&key=' + key;
+                    console.log(forecasturl);
+                    console.log(yesterdayurl);
 
                     //Get forecast for 5 days
                     fetch(forecasturl).then((response) => response.json())
@@ -76,6 +80,7 @@ class HomeScreen extends Component {
                                 this.setState({ loading: false });
                             }
                         }).done();
+                    
                     //Get yesterday's weather informatin.
                     fetch(yesterdayurl).then((response) => response.json())
                         .then((responseJson) => {
@@ -109,7 +114,6 @@ class HomeScreen extends Component {
     render() {
         const { navigate } = this.props.navigation;
         let buttonColor = '#6495ed';
-        console.log(this.state.loading);
 
         // Todo: Highlighting texts
         if (this.state.loading) {
@@ -136,10 +140,11 @@ class HomeScreen extends Component {
         }
 
         return (
+
             <BackgroundImage>
                 <View style={Style.buttonContainer}>
                     <View style={Style.buttonContainersub}>
-                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast')} />
+                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast', { forecast: this.state.forecast })} />
                         <Button color={buttonColor} style={Style.menuButton} title={'Information'} onPress={() => navigate('Information')} />
                     </View>
                     <View style={Style.buttonContainersub}>
