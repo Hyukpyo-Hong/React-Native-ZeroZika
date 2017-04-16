@@ -12,18 +12,19 @@ import {
     TabNavigator
 } from 'react-navigation';
 
-import { createStore } from 'redux'
-import { Provider, connect } from 'react-redux'
-
 import ForecastScreen from './screens/ForecastScreen'
 import InformationScreen from './screens/InformationScreen'
 import SettingScreen from './screens/SettingScreen'
 import TipnTossScreen from './screens/TipntossScreen'
 
 import Style from './Style';
+
 import getDate from './model/getDate'
-import { reducer } from './model/reducer'
-import { actionCreators } from './model/reducer'
+
+import { createStore } from 'redux'
+import { Provider, connect } from 'react-redux'
+import { reducer } from './reducer/reducer'
+import { actionCreators } from './reducer/reducer'
 
 
 const store = createStore(reducer);
@@ -42,20 +43,6 @@ class BackgroundImage extends Component {
     }
 }
 
-class _HomeScreen extends Component {
-    static navigationOptions = {
-        header: {
-            visible: false,
-        }
-    };
-    render() {
-        return (
-            <Provider store={store}>
-                <__HomeScreen store={store} navigation={this.props.navigation} />
-            </Provider>
-        )
-    }
-}
 
 class HomeScreen extends Component {
     constructor(props) {
@@ -100,7 +87,7 @@ class HomeScreen extends Component {
                     //Get forecast for 5 days
                     fetch(forecasturl).then((response) => response.json())
                         .then((responseJson) => {
-                            const city = responseJson.city_name;
+                            const city = responseJson.city_name+', '+responseJson.state_code;
                             const forecast = responseJson;
                             dispatch(actionCreators.set_city(city));
                             dispatch(actionCreators.set_forecast(forecast));
@@ -146,6 +133,11 @@ class HomeScreen extends Component {
         }
 
     }
+    static navigationOptions = {
+        header: {
+            visible: false,
+        }
+    };
     render() {
         const { navigate } = this.props.navigation;
         let buttonColor = '#6495ed';
@@ -184,24 +176,17 @@ class HomeScreen extends Component {
                     </View>
                     <View style={Style.buttonContainersub}>
                         <Button color={buttonColor} style={Style.menuButton} title={'Tip N`Toss'} onPress={() => navigate('TipnToss')} />
-                        <Button color={buttonColor} style={Style.menuButton} title={'Setting'} onPress={() => navigate('Setting', { store: { store } })} />
+                        <Button color={buttonColor} style={Style.menuButton} title={'Setting'} onPress={() => navigate('Setting')} />
                     </View>
                 </View>
             </BackgroundImage>
-            /*
-            <View >
-            <Text> Latitude: {this.state.latitude} </Text>
-            <Text> Longitude: {this.state.longitude} </Text>
-            <Text>City: {this.state.city_name}</Text>
-            </View>
-                */
         )
     }
 }
 
-const __HomeScreen = connect(mapStateToProps)(HomeScreen);
+const _HomeScreen = connect(mapStateToProps)(HomeScreen);
 
-const MainScreen = StackNavigator({
+const _MainScreen = StackNavigator({
     Home: { screen: _HomeScreen },
     Forecast: { screen: ForecastScreen },
     Information: { screen: InformationScreen },
@@ -209,5 +194,14 @@ const MainScreen = StackNavigator({
     TipnToss: { screen: TipnTossScreen },
 });
 
+class MainScreen extends Component {
+    render() {
+        return (
+            <Provider store={store}>
+                <_MainScreen />
+            </Provider>
+        )
+    }
+}
 
 AppRegistry.registerComponent('ZeroZika', () => MainScreen);

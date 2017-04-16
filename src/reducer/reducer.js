@@ -4,6 +4,7 @@ export const types = {
     SET_YESTERDAY: 'SET_YESTERDAY',
     SET_CITY: 'SET_CITY',
     SET_TODAY: 'SET_TODAY',
+    SET_ALARM: 'SET_ALARM',
 }
 
 // Helper functions to dispatch actions, optionally with payloads
@@ -22,6 +23,9 @@ export const actionCreators = {
     },
     set_today: (item) => {
         return { type: types.SET_TODAY, payload: item }
+    },
+    set_alarm: (item) => {
+        return { type: types.SET_ALARM, payload: item }
     },
 }
 
@@ -65,6 +69,11 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 today: payload,
+            }
+        case types.SET_ALARM:
+            return {
+                ...state,
+                alarm: payload,
             }
 
         default:
