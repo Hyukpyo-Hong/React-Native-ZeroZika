@@ -5,7 +5,10 @@ export const types = {
     SET_CITY: 'SET_CITY',
     SET_TODAY: 'SET_TODAY',
     SET_ALARM: 'SET_ALARM',
+    ISLOADING: 'ISLOADING',
+    ISERROR: 'ISERROR',
 }
+
 
 // Helper functions to dispatch actions, optionally with payloads
 export const actionCreators = {
@@ -27,6 +30,12 @@ export const actionCreators = {
     set_alarm: (item) => {
         return { type: types.SET_ALARM, payload: item }
     },
+    iserror: (item) => {
+        return { type: types.ISERROR, payload: item }
+    },
+    isloading: (item) => {
+        return { type: types.ISLOADING, payload: item }
+    },
 }
 
 // Initial state of the store
@@ -38,6 +47,8 @@ const initialState = {
     yesterday: null,
     today: null,
     alarm: false,
+    iserror: false,
+    isloading: true,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -74,6 +85,16 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 alarm: payload,
+            }
+        case types.ISERROR:
+            return {
+                ...state,
+                iserror: payload,
+            }
+        case types.ISLOADING:
+            return {
+                ...state,
+                isloading: payload,
             }
 
         default:

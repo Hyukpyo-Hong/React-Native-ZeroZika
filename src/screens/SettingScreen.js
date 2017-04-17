@@ -10,14 +10,12 @@ import {
   Button,
   ActivityIndicator,
 } from 'react-native';
-import { actionCreators } from '../model/reducer'
+import { actionCreators } from '../reducer/reducer'
 import Style from '../Style.setting';
 
 const mapStateToProps = (state) => ({
   properties: state,
 })
-
-
 
 class SettingScreen extends Component {
   constructor(props) {

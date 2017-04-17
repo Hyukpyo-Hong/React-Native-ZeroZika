@@ -19,19 +19,30 @@ import TipnTossScreen from './screens/TipntossScreen'
 
 import Style from './Style';
 
-import getDate from './model/getDate'
-
-import { createStore } from 'redux'
 import { Provider, connect } from 'react-redux'
+import {
+    createStore,
+    applyMiddleware,
+    bindActionCreators,
+} from 'redux';
+import thunk from 'redux-thunk';
+import createLogger from 'redux-logger'
 import { reducer } from './reducer/reducer'
 import { actionCreators } from './reducer/reducer'
 
+import * as zikaActions from './actions/Actions';
 
-const store = createStore(reducer);
+const middleware = [thunk];
+const store = createStore(reducer, applyMiddleware(...middleware));
+
 
 const mapStateToProps = (state) => ({
     properties: state,
 })
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators(zikaActions, dispatch);
+};
 
 class BackgroundImage extends Component {
     render() {
@@ -47,7 +58,6 @@ class BackgroundImage extends Component {
 class HomeScreen extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
         this.state = {
             latitude: null, longitude: null, error: null,
             forecast: null, yesterday: null,
@@ -55,83 +65,9 @@ class HomeScreen extends Component {
             loading: true, fetchError: false,
         };
     }
-    componentWillMount() {
-
-
-    }
-
+    componentWillMount() { }
     componentDidMount() {
-        const { dispatch } = this.props;
-        try {
-            //Todo: Seperate from this file
-            //Get Latitude and Longitude
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const geo = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                    }
-                    dispatch(actionCreators.set_geo(geo));
-                    this.setState({
-                        latitude: geo.latitude,
-                        longitude: geo.longitude,
-                        error: null,
-                    });
-
-                    let key = '&key=d05c52f28c5e48d2afc4284807540cb2'
-                    let startdate = getDate(true);
-                    let enddate = getDate(false);
-                    let forecasturl = 'https://api.weatherbit.io/v1.0/forecast/3hourly?lat=' + this.state.latitude + '&lon=' + this.state.longitude + key;
-                    let yesterdayurl = 'https://api.weatherbit.io/v1.0/history?lat=' + this.state.latitude + '&lon=' + this.state.longitude + key + '&start_date=' + startdate + '&end_date=' + enddate + '&key=' + key;
-
-                    //Get forecast for 5 days
-                    fetch(forecasturl).then((response) => response.json())
-                        .then((responseJson) => {
-                            const city = responseJson.city_name+', '+responseJson.state_code;
-                            const forecast = responseJson;
-                            dispatch(actionCreators.set_city(city));
-                            dispatch(actionCreators.set_forecast(forecast));
-                            this.setState({
-                                forecast: forecast,
-                                city_name: city,
-                            });
-                            console.log("Forecast");
-                            console.log(this.state.forecast);
-
-
-
-                            if (this.state.yesterday) {
-                                this.setState({ loading: false });
-                            }
-                        }).done();
-
-                    //Get yesterday's weather informatin.
-                    fetch(yesterdayurl).then((response) => response.json())
-                        .then((responseJson) => {
-                            const yesterday = responseJson;
-                            dispatch(actionCreators.set_yesterday(yesterday));
-                            this.setState({
-                                yesterday: yesterday,
-                            });
-                            console.log("Yesterday");
-                            console.log(this.state.yesterday);
-
-
-                            if (this.state.forecast) {
-                                this.setState({ loading: false });
-                            }
-                        }).done();
-                },
-                (error) => this.setState({ error: error.message }),
-                { enableHighAccuracy: true, timeout: 20000, },
-                // This line makes geolocation not working. But looks like neccessary.
-                //{ enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 },
-            );
-        } catch (e) {
-            console.log(e);
-            this.setState({ loading: false, fetchError: true })
-        }
-
+        this.props.set_info();
     }
     static navigationOptions = {
         header: {
@@ -142,8 +78,19 @@ class HomeScreen extends Component {
         const { navigate } = this.props.navigation;
         let buttonColor = '#6495ed';
 
+        if (this.props.properties.iserror) {
+            return (
+                <BackgroundImage>
+                    <View style={Style.loadingContainer}>
+                        <Text style={Style.loadingtextBig}>
+                            It is likely there are too many requests from other users. Please try again serveral minutes later.
+                        </Text>
+                    </View>
+                </BackgroundImage>
+            )
+        }
         // Todo: Highlighting texts
-        if (this.state.loading) {
+        if (!this.props.properties.forecast && !this.props.properties.yesterday) {
             return (
                 <BackgroundImage>
                     <View style={Style.loadingContainer}>
@@ -156,22 +103,12 @@ class HomeScreen extends Component {
             )
         }
 
-        if (this.state.fetchError) {
-            return (
-                <View style={Style.center}>
-                    <Text>
-                        It is likely there are too many requests from other users. Please try again serveral minutes later.
-          </Text>
-                </View>
-            )
-        }
-
         return (
 
             <BackgroundImage>
                 <View style={Style.buttonContainer}>
                     <View style={Style.buttonContainersub}>
-                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast', { forecast: this.state.forecast })} />
+                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast', { forecast: this.props.properties.forecast })} />
                         <Button color={buttonColor} style={Style.menuButton} title={'Information'} onPress={() => navigate('Information')} />
                     </View>
                     <View style={Style.buttonContainersub}>
@@ -184,7 +121,7 @@ class HomeScreen extends Component {
     }
 }
 
-const _HomeScreen = connect(mapStateToProps)(HomeScreen);
+const _HomeScreen = connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
 
 const _MainScreen = StackNavigator({
     Home: { screen: _HomeScreen },

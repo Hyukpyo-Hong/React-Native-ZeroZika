@@ -18,6 +18,7 @@ class ForecastScreen extends Component {
     title: 'Forecast',
   };
   render() {
+    
     const { params } = this.props.navigation.state;
     return (
       <View>

@@ -1,3 +1,6 @@
+import { connect } from 'react-redux'
+import { actionCreators } from '../reducer/reducer'
+
 module.exports = function getDate(yesterday) {
     var today = new Date();
     var yyyy = today.getFullYear();
@@ -17,3 +20,4 @@ module.exports = function getDate(yesterday) {
     return yyyy + '-' + mm + '-' + dd;
 
 }
+
