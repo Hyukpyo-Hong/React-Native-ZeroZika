@@ -12,6 +12,8 @@ import iconMap from '../images/iconMap'
 import monthMap from '../model/monthMap'
 import timeMap from '../model/timeMap'
 
+import Style from '../design/Style_forecast';
+
 class ForecastScreen extends Component {
   static navigationOptions = {
     title: 'Forecast',
@@ -35,11 +37,8 @@ class ForecastScreen extends Component {
 
   }
   componentWillMount() {
-    console.log(this.state);
   }
   render() {
-
-    const { params } = this.props.navigation.state;
     return (
       <View>
         <Forecast forecast={this.state.forecast} risk_set={this.state.risk_set} />
@@ -54,7 +53,12 @@ class Forecast extends Component {
     var dataSource = new ListView.DataSource(
       { rowHasChanged: (r1, r2) => r1.lister_url !== r2.lister_url });
     this.state = {
-      dataSource: dataSource.cloneWithRows(this.props.forecast.data)
+      dataSource: dataSource.cloneWithRows(this.props.forecast.data),
+      yesterday: this.props.risk_set.yesterday + "", // Have to add something to display (need to string)
+      today: this.props.risk_set.today + "",
+      season: this.props.risk_set.season + "",
+      temp: this.props.risk_set.temp + "",
+      result: this.props.risk_set.result + "",
     };
   }
 
@@ -68,7 +72,7 @@ class Forecast extends Component {
 
     return (
       <TouchableHighlight
-        underlayColor='#dddddd'>
+        underlayColor='#dddddd' style={Style.forecast_container}>
         <View>
           <Text>{time}  {day}.{month}</Text>
           <View style={Style.weather}>
@@ -79,25 +83,37 @@ class Forecast extends Component {
       </TouchableHighlight>
     );
   }
+  componentWillMount() {
+    if (this.state.result === 'false') {
+      this.setState({
+        result: 'LOW'
+      })
+    } else {
+      this.setState({
+        result: 'HIGH'
+      })
+    }
 
+  }
   render() {
     return (
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderRow.bind(this)} />
+      <View style={Style.container}>
+        <View style={Style.risk_container}>
+          <Text style={Style.risk_result}>Risk: {this.state.result}</Text>
+          <View style={Style.risk_factor_container}>
+            <Text style={Style.risk_factor}>Rain Yesterday: {this.state.yesterday}</Text>
+            <Text style={Style.risk_factor}>Rain Today: {this.state.today}</Text>
+            <Text style={Style.risk_factor}>April~October: {this.state.season}</Text>
+            <Text style={Style.risk_factor}>Above 50°F: {this.state.temp}</Text>
+          </View>
+        </View>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderRow.bind(this)} />
+      </View>
     );
   }
 }
-
-var Style = StyleSheet.create({
-  icon: {
-    width: 50,
-    height: 50,
-  },
-  weather: {
-    flexDirection: 'row',
-  }
-});
 
 
 export default ForecastScreen;
