@@ -2,11 +2,14 @@ export const types = {
     SET_GEO: 'SET_GEO',
     SET_FORECAST: 'SET_FORECAST',
     SET_YESTERDAY: 'SET_YESTERDAY',
+    SET_TODAY: 'SET_TODAY',
     SET_CITY: 'SET_CITY',
     SET_TODAY: 'SET_TODAY',
     SET_ALARM: 'SET_ALARM',
+    SET_TEMP: 'SET_TEMP',
     ISLOADING: 'ISLOADING',
     ISERROR: 'ISERROR',
+    ISINITIAL: 'ISINITIAL',
 }
 
 
@@ -30,11 +33,17 @@ export const actionCreators = {
     set_alarm: (item) => {
         return { type: types.SET_ALARM, payload: item }
     },
+    set_temp: (item) => {
+        return { type: types.SET_TEMP, payload: item }
+    },
     iserror: (item) => {
         return { type: types.ISERROR, payload: item }
     },
     isloading: (item) => {
         return { type: types.ISLOADING, payload: item }
+    },
+    isinitial: (item) => {
+        return { type: types.ISINITIAL, payload: item }
     },
 }
 
@@ -49,6 +58,8 @@ const initialState = {
     alarm: false,
     iserror: false,
     isloading: true,
+    isinitial: true,
+    temp: null,
 }
 
 export const reducer = (state = initialState, action) => {
@@ -65,6 +76,7 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 city: payload,
+                temp: payload,
             }
         case types.SET_FORECAST:
             return {
@@ -95,6 +107,16 @@ export const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 isloading: payload,
+            }
+        case types.ISINITIAL:
+            return {
+                ...state,
+                isinitial: payload,
+            }
+        case types.SET_TEMP:
+            return {
+                ...state,
+                temp: payload,
             }
 
         default:

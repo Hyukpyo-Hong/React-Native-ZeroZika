@@ -13,12 +13,21 @@ import monthMap from '../model/monthMap'
 import timeMap from '../model/timeMap'
 
 class ForecastScreen extends Component {
-
   static navigationOptions = {
     title: 'Forecast',
-  };
+    header: navigation => ({
+      style: {
+        backgroundColor: 'rgb(47,54,61)'
+      },
+      titleStyle: {
+        color: '#fefefe',
+        fontWeight: '300',
+      },
+      tintColor: '#fefefe'
+    })
+  }
   render() {
-    
+
     const { params } = this.props.navigation.state;
     return (
       <View>
@@ -53,7 +62,7 @@ class Forecast extends Component {
           <Text>{time}  {day}.{month}</Text>
           <View style={Style.weather}>
             <Image source={iconMap[rowData.weather.icon]} style={Style.icon} />
-            <Text>{rowData.weather.description} {Math.round(rowData.temp * 9 / 5 + 32)}(°F)</Text>
+            <Text>{rowData.weather.description} {rowData.temp}(°F)</Text>
           </View>
         </View>
       </TouchableHighlight>

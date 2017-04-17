@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch) => {
 class BackgroundImage extends Component {
     render() {
         return (
-            <Image source={require('./images/logo.png')} style={Style.backgroundImage} resizeMode='cover'>
+            <Image source={require('./images/title.png')} style={Style.backgroundImage} resizeMode='cover'>
                 {this.props.children}
             </Image>
         )
@@ -56,24 +56,42 @@ class BackgroundImage extends Component {
 
 
 class HomeScreen extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            latitude: null, longitude: null, error: null,
-            forecast: null, yesterday: null,
-            city_name: null,
-            loading: true, fetchError: false,
-        };
-    }
-    componentWillMount() { }
-    componentDidMount() {
-        this.props.set_info();
-    }
     static navigationOptions = {
         header: {
             visible: false,
         }
     };
+    constructor(props) {
+        super(props);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        console.log("Enter");
+        if (nextProps.properties.forecast === null
+            || nextProps.properties.yesterday === null
+            || nextProps.properties.today === null) {
+            console.log("STOP")
+            return false
+        }
+        console.log("PASS")
+        return true;
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (nextProps.properties.city !== nextProps.properties.temp && !this.props.properties.isinitial) {
+            console.log(nextProps.properties.city);
+            console.log(nextProps.properties.temp);
+            console.log("RESET");
+            this.props.reset_info(nextProps.properties.temp);
+        }
+    }
+    componentWillMount() {
+        if (this.props.properties.isinitial) {
+            this.props.set_info();
+            this.props.isinitial(false);
+        }
+    }
+
     render() {
         const { navigate } = this.props.navigation;
         let buttonColor = '#6495ed';
@@ -105,7 +123,10 @@ class HomeScreen extends Component {
 
         return (
 
-            <BackgroundImage>
+            <BackgroundImage style={Style.container}>
+                <View style={Style.loadedContainer}>
+                    <Text style={Style.loadingtext}> Current Location: {this.props.properties.city}  </Text>
+                </View>
                 <View style={Style.buttonContainer}>
                     <View style={Style.buttonContainersub}>
                         <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast', { forecast: this.props.properties.forecast })} />
@@ -119,6 +140,7 @@ class HomeScreen extends Component {
             </BackgroundImage>
         )
     }
+    componentDidMount() { }
 }
 
 const _HomeScreen = connect(mapStateToProps, mapDispatchToProps)(HomeScreen);

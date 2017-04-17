@@ -9,15 +9,35 @@ import {
   AppRegistry,
   Button,
   ActivityIndicator,
+  Keyboard,
 } from 'react-native';
 import { actionCreators } from '../reducer/reducer'
 import Style from '../Style.setting';
+import { NavigationActions } from 'react-navigation'
+
+const backAction = NavigationActions.back({
+})
+
+
 
 const mapStateToProps = (state) => ({
   properties: state,
 })
 
 class SettingScreen extends Component {
+  static navigationOptions = {
+    title: 'Setting',
+    header: navigation => ({
+      style: {
+        backgroundColor: 'rgb(47,54,61)'
+      },
+      titleStyle: {
+        color: '#fefefe',
+        fontWeight: '300',
+      },
+      tintColor: '#fefefe'
+    })
+  }
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
@@ -28,9 +48,6 @@ class SettingScreen extends Component {
 
 
   }
-  static navigationOptions = {
-    title: 'Setting',
-  };
 
   save = () => {
     const { dispatch } = this.props;
@@ -38,12 +55,15 @@ class SettingScreen extends Component {
     var city = this.state.city;
     var alarm = this.state.alarm;
     if (city !== this.props.properties.city) {
-      dispatch(actionCreators.set_city(city));
+      city = encodeURI(city);
+      dispatch(actionCreators.set_temp(city));
     }
     if (alarm !== this.props.properties.alarm) {
       dispatch(actionCreators.set_alarm(alarm));
     }
-    navigate('Home')
+    Keyboard.dismiss();
+    this.props.navigation.dispatch(backAction)
+    //navigate('Home'); -> make multiple windows
   }
 
   render() {
@@ -52,13 +72,14 @@ class SettingScreen extends Component {
         <View style={Style.row}>
           <Text style={Style.rowTitle}>Location(City, State)</Text>
           <TextInput style={Style.input}
-            value={this.state.city}
+            placeholder={this.state.city}
             onChangeText={(text) => this.setState({ city: text })}
           />
         </View>
         <View style={Style.row}>
           <Text style={Style.rowTitle}>Notification</Text>
-          <Switch value={this.state.alarm} onValueChange={(bool) => this.setState({ alarm: bool })} />
+          <Switch value={this.state.alarm} onValueChange={(bool) => { this.setState({ alarm: bool }); Keyboard.dismiss(); }
+          } />
         </View>
         <View>
           <Button

@@ -21,11 +21,22 @@ var Style = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    loadingContainer: {
+    container: {
         flex: 1,
-        justifyContent: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
         alignItems: 'center',
 
+    },
+    loadedContainer: {
+        flex: 1,
+    },
+
+    loadingContainer: {
+        flex: 1,
+        alignItems: 'flex-end',
+        flexDirection: 'column',
+        alignItems: 'center',
     },
     loadingtext: {
         backgroundColor: 'black',
