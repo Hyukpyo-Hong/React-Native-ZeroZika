@@ -1,14 +1,14 @@
-import { connect } from 'react-redux'
-import { actionCreators } from '../reducer/reducer'
-
 module.exports = function getDate(yesterday) {
     var today = new Date();
-    var yyyy = today.getFullYear();
-    var mm = today.getMonth() + 1; //January is 0!
+    var yes_day = new Date((new Date()).valueOf() - 1000*60*60*24);
 
     if (yesterday) {
-        var dd = today.getDate() - 1;
+        var yyyy = yes_day.getFullYear();
+        var mm = yes_day.getMonth() + 1; //January is 0!
+        var dd = yes_day.getDate();
     } else {
+        var yyyy = today.getFullYear();
+        var mm = today.getMonth() + 1; //January is 0!
         var dd = today.getDate();
     }
     if (dd < 10) {

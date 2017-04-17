@@ -26,12 +26,23 @@ class ForecastScreen extends Component {
       tintColor: '#fefefe'
     })
   }
+  constructor(props) {
+    super(props);
+    this.state = {
+      risk_set: this.props.navigation.state.params.risk_set,
+      forecast: this.props.navigation.state.params.forecast,
+    };
+
+  }
+  componentWillMount() {
+    console.log(this.state);
+  }
   render() {
 
     const { params } = this.props.navigation.state;
     return (
       <View>
-        <Forecast forecast={params.forecast} />
+        <Forecast forecast={this.state.forecast} risk_set={this.state.risk_set} />
       </View>
     );
   }

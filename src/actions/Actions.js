@@ -66,6 +66,7 @@ function _reset_info(dispatch, city) {
         let todayurl = 'https://api.weatherbit.io/v1.0/current/geosearch?city=' + city + '&country=us&units=I&' + key;
         fetch(todayurl).then((response) => {
             if (response.status !== 204) {
+                dispatch(actionCreators.set_init());
                 return response.json();
             } else {
                 console.log('Invalid City Name.');
@@ -127,5 +128,11 @@ export function reset_info(city) {
 export function isinitial(value) {
     return (dispatch) => {
         dispatch(actionCreators.isinitial(value));
+    }
+}
+
+export function set_risk(value) {
+    return (dispatch) => {
+        dispatch(actionCreators.set_risk(value));
     }
 }

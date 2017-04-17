@@ -32,6 +32,8 @@ import { actionCreators } from './reducer/reducer'
 
 import * as zikaActions from './actions/Actions';
 
+import compute_risk from './model/compute_risk';
+
 const middleware = [thunk];
 const store = createStore(reducer, applyMiddleware(...middleware));
 
@@ -54,7 +56,6 @@ class BackgroundImage extends Component {
     }
 }
 
-
 class HomeScreen extends Component {
     static navigationOptions = {
         header: {
@@ -66,22 +67,16 @@ class HomeScreen extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        console.log("Enter");
         if (nextProps.properties.forecast === null
             || nextProps.properties.yesterday === null
             || nextProps.properties.today === null) {
-            console.log("STOP")
             return false
         }
-        console.log("PASS")
         return true;
     }
 
     componentWillUpdate(nextProps, nextState) {
         if (nextProps.properties.city !== nextProps.properties.temp && !this.props.properties.isinitial) {
-            console.log(nextProps.properties.city);
-            console.log(nextProps.properties.temp);
-            console.log("RESET");
             this.props.reset_info(nextProps.properties.temp);
         }
     }
@@ -108,7 +103,7 @@ class HomeScreen extends Component {
             )
         }
         // Todo: Highlighting texts
-        if (!this.props.properties.forecast && !this.props.properties.yesterday) {
+        if (!this.props.properties.forecast || !this.props.properties.yesterday || !this.props.properties.today) {
             return (
                 <BackgroundImage>
                     <View style={Style.loadingContainer}>
@@ -119,17 +114,21 @@ class HomeScreen extends Component {
                     </View>
                 </BackgroundImage>
             )
+        } else {
+            var risk_set = compute_risk(this.props.properties.forecast, this.props.properties.yesterday, this.props.properties.today);
+
         }
 
         return (
-
             <BackgroundImage style={Style.container}>
                 <View style={Style.loadedContainer}>
                     <Text style={Style.loadingtext}> Current Location: {this.props.properties.city}  </Text>
                 </View>
                 <View style={Style.buttonContainer}>
                     <View style={Style.buttonContainersub}>
-                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'} onPress={() => navigate('Forecast', { forecast: this.props.properties.forecast })} />
+                        <Button color={buttonColor} style={Style.menuButton} title={'Forecast'}
+                            onPress={() => navigate('Forecast',
+                                { forecast: this.props.properties.forecast, risk_set: risk_set })} />
                         <Button color={buttonColor} style={Style.menuButton} title={'Information'} onPress={() => navigate('Information')} />
                     </View>
                     <View style={Style.buttonContainersub}>

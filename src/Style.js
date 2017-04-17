@@ -9,7 +9,7 @@ var Style = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         flex: 1,
-        //alignItems: 'flex-end',
+        alignItems: 'flex-end',
     },
     buttonContainersub: {
         flex: 1,
