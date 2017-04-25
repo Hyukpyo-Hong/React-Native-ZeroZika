@@ -57,7 +57,7 @@ function check(forecast, yesterday, today) {
 
     if ((temp_sum / count) >= 50) {
         result.temp = true
-    }
+    } 
     var month = parseInt(dateset.today.slice(0, 2));
     if (month >= 4 && month <= 10) {
         result.season = true;
@@ -73,7 +73,6 @@ module.exports = function compute_risk(forecast, yesterday, today) {
     if (risk_set.season && risk_set.temp && risk_set.yesterday && !risk_set.today) {
         risk_set.result = true;
     }
-    console.log(risk_set);
     return risk_set;
 
 }

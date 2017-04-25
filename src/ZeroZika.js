@@ -118,7 +118,6 @@ class HomeScreen extends Component {
             var risk_set = compute_risk(this.props.properties.forecast, this.props.properties.yesterday, this.props.properties.today);
 
         }
-
         return (
             <BackgroundImage style={Style.container}>
                 <View style={Style.loadedContainer}>
@@ -128,7 +127,7 @@ class HomeScreen extends Component {
                     <View style={Style.buttonContainersub}>
                         <Button color={buttonColor} style={Style.menuButton} title={'Forecast'}
                             onPress={() => navigate('Forecast',
-                                { forecast: this.props.properties.forecast, risk_set: risk_set })} />
+                                { today: this.props.properties.today, yesterday: this.props.properties.yesterday, forecast: this.props.properties.forecast, risk_set: risk_set })} />
                         <Button color={buttonColor} style={Style.menuButton} title={'Information'} onPress={() => navigate('Information')} />
                     </View>
                     <View style={Style.buttonContainersub}>

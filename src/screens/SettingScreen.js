@@ -15,10 +15,19 @@ import { actionCreators } from '../reducer/reducer'
 import Style from '../Style.setting';
 import { NavigationActions } from 'react-navigation'
 
+
+class BackgroundImage extends Component {
+  render() {
+    return (
+      <Image source={require('../images/setting.png')} style={Style.backgroundImage} resizeMode='cover'>
+        {this.props.children}
+      </Image>
+    )
+  }
+}
+
 const backAction = NavigationActions.back({
 })
-
-
 
 const mapStateToProps = (state) => ({
   properties: state,
@@ -68,27 +77,29 @@ class SettingScreen extends Component {
 
   render() {
     return (
-      <View style={Style.container} >
-        <View style={Style.row}>
-          <Text style={Style.rowTitle}>Location(City, State)</Text>
-          <TextInput style={Style.input}
-            placeholder={this.state.city}
-            onChangeText={(text) => this.setState({ city: text })}
-          />
+      <BackgroundImage>
+        <View style={Style.container} >
+          <View style={Style.row}>
+            <Text style={Style.rowTitle}>Location(City, State)</Text>
+            <TextInput style={Style.input}
+              placeholder={this.state.city}
+              onChangeText={(text) => this.setState({ city: text })}
+            />
+          </View>
+          <View style={Style.row}>
+            <Text style={Style.rowTitle}>Notification</Text>
+            <Switch value={this.state.alarm} onValueChange={(bool) => { this.setState({ alarm: bool }); Keyboard.dismiss(); }
+            } />
+          </View>
+          <View>
+            <Button
+              onPress={this.save}
+              title="Save Properties"
+              color="#6495ed"
+            />
+          </View>
         </View>
-        <View style={Style.row}>
-          <Text style={Style.rowTitle}>Notification</Text>
-          <Switch value={this.state.alarm} onValueChange={(bool) => { this.setState({ alarm: bool }); Keyboard.dismiss(); }
-          } />
-        </View>
-        <View>
-          <Button
-            onPress={this.save}
-            title="Save Properties"
-            color="#841584"
-          />
-        </View>
-      </View>
+      </BackgroundImage>
     )
   }
 }

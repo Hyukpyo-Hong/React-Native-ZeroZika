@@ -1,13 +1,18 @@
 import { StyleSheet } from 'react-native';
 
 var Style = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        width: null,
+        height: null
+    },
     container: {
         flex: 1,
         flexDirection: 'column',
     },
     row: {
         alignItems: 'flex-start',
-        margin:10,
+        margin: 10,
     },
     rowTitle: {
         fontWeight: 'bold',
@@ -15,7 +20,7 @@ var Style = StyleSheet.create({
     },
     input: {
         height: 40,
-        width:200,
+        width: 200,
     },
     button: {
         borderRadius: 5,
