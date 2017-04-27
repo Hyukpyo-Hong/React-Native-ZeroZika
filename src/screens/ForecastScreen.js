@@ -92,15 +92,13 @@ class Forecast extends Component {
     var time = timeMap[date.substr(11, 2)];
 
     return (
-      <TouchableHighlight
-        underlayColor='#dddddd' >
+      <TouchableHighlight>
         <View style={Style.forecast_container}>
-          <Text style={Style.forecast_date}>{day}.{month}</Text>
-          <Text style={Style.forecast_date}>{time}</Text>
+          <Text style={Style.forecast_date}>{day}.{month}{"\n"}{time}</Text>
           <View style={Style.forecast_weather}>
-            <Image source={iconMap[rowData.weather.icon]} style={Style.forecast_icon} />
+            <Image source={iconMap[rowData.weather.icon]} resizeMode={'contain'} style={Style.forecast_icon} />
             <Text style={Style.forecast_desc}>{rowData.weather.description}</Text>
-            <Text style={Style.forecast_temp}>{rowData.temp}(°F)</Text>
+            <Text style={Style.forecast_temp}>{rowData.temp.toFixed(1)}(°F)</Text>
           </View>
         </View>
       </TouchableHighlight>

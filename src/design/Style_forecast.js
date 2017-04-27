@@ -18,36 +18,43 @@ var Style = StyleSheet.create({
     forecast_desc: {
         color: 'white',
         flex: 2,
+        fontSize: 17,
     },
     forecast_temp: {
         color: 'white',
         flex: 1,
+        fontSize: 17,
     },
     forecast_date: {
+        textAlign: 'center',
         color: 'white',
         flex: 1,
+        fontSize: 18,
     },
     forecast_container: {
+        marginTop: 2,
         flex: 1,
         flexDirection: 'row',
-        paddingVertical: 10
+        paddingVertical: 10,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#fff'
     },
 
     forecast_weather: {
+        alignItems: 'center',
         flex: 4,
         flexDirection: 'row',
     },
 
     risk_container: {
+        marginBottom: 2,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#fff',
         backgroundColor: 'steelblue',
         flexDirection: 'row',
 
-    },
-    risk_result_container: {
-        flex: 1.7,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     risk_result_title: {
         fontSize: 23,

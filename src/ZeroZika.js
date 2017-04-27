@@ -89,7 +89,6 @@ class HomeScreen extends Component {
 
     render() {
         const { navigate } = this.props.navigation;
-        let buttonColor = '#6495ed';
 
         if (this.props.properties.iserror) {
             return (
@@ -118,6 +117,7 @@ class HomeScreen extends Component {
             var risk_set = compute_risk(this.props.properties.forecast, this.props.properties.yesterday, this.props.properties.today);
 
         }
+        let buttonColor = '#6495ed';
         return (
             <BackgroundImage style={Style.container}>
                 <View style={Style.loadedContainer}>

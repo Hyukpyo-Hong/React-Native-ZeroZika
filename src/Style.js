@@ -8,13 +8,14 @@ var Style = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        flex: 1,
+        flex: 20,
         alignItems: 'flex-end',
     },
     buttonContainersub: {
         flex: 1,
     },
     menuButton: {
+        
     },
     center: {
         flex: 1,
@@ -24,24 +25,22 @@ var Style = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-
     },
     loadedContainer: {
+        alignItems: 'center',
         flex: 1,
+    },
+    loadingtext: {
+        backgroundColor: 'midnightblue',
+        fontSize: 18,        
+        color: 'white',
     },
 
     loadingContainer: {
         flex: 1,
-        alignItems: 'flex-end',
+        
         flexDirection: 'column',
         alignItems: 'center',
-    },
-    loadingtext: {
-        backgroundColor: 'black',
-        fontSize: 15,
-        color: 'white',
     },
     loadingtextBig: {
         backgroundColor: 'black',
