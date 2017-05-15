@@ -88,7 +88,7 @@ android {
 
     defaultConfig {
         applicationId "com.zerozika"
-        minSdkVersion 16
+        minSdkVersion 21 
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -137,6 +137,11 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-push-notification')
+    compile ('com.google.android.gms:play-services-gcm:8.1.0') {
+        force = true;
+    }
+    compile project(':react-native-background-job')
     compile project(':react-native-video')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"

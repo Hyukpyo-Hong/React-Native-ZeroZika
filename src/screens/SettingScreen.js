@@ -10,11 +10,12 @@ import {
   Button,
   ActivityIndicator,
   Keyboard,
-  AsyncStorage
+  AsyncStorage,
 } from 'react-native';
 import { actionCreators } from '../reducer/reducer'
 import Style from '../Style.setting';
 import { NavigationActions } from 'react-navigation'
+import BackgroundJob from 'react-native-background-job';
 
 
 class BackgroundImage extends Component {
@@ -45,8 +46,6 @@ class SettingScreen extends Component {
       city: this.props.properties.city,
       alarm: this.props.properties.alarm
     }
-
-
   }
 
   save = () => {
@@ -59,7 +58,21 @@ class SettingScreen extends Component {
       dispatch(actionCreators.set_temp(city));
     }
     if (alarm !== this.props.properties.alarm) {
-      AsyncStorage.setItem('alarm',alarm.toString());
+      switch (alarm) {
+        case true:
+          BackgroundJob.schedule({
+            jobKey: "alarm",
+            period: 500000,
+            timeout: 5000,
+            networkType: BackgroundJob.NETWORK_TYPE_UNMETERED
+          });
+          break;
+        case false:
+          BackgroundJob.cancel({ jobKey: "alarm" });
+          break;
+      }
+
+      AsyncStorage.setItem('alarm', alarm.toString());
       dispatch(actionCreators.set_alarm(alarm));
     }
     Keyboard.dismiss();

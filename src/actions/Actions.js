@@ -1,7 +1,9 @@
 import types from '../reducer/reducer';
 import { actionCreators } from '../reducer/reducer'
 import getDate from '../model/getDate'
-import { AsyncStorage } from 'react-native'
+import {
+    AsyncStorage,
+} from 'react-native'
 
 function _set_info(dispatch) {
     try {
@@ -25,6 +27,7 @@ function _set_info(dispatch) {
                 fetch(forecasturl).then((response) => response.json())
                     .then((responseJson) => {
                         const city = responseJson.city_name + ', ' + responseJson.state_code;
+                        AsyncStorage.setItem('city', city);
                         const forecast = responseJson;
                         dispatch(actionCreators.set_city(city));
                         dispatch(actionCreators.set_forecast(forecast));
@@ -59,12 +62,14 @@ function _set_info(dispatch) {
         dispatch(actionCreators.iserror(true));
     }
     //Load Alarm Setting from storage
+
     let alarm = AsyncStorage.getItem('alarm').then((alarm) => {
-        let _alarm = (alarm=='true');//String -> Bool
+        let _alarm = (alarm == 'true');//String -> Bool
         dispatch(actionCreators.set_alarm(_alarm));
     })
 
 }
+function BreakSignal() { } // For when city is not found
 function _reset_info(dispatch, city) {
     try {
         //Get current weather informatin. If latitude , longitude can be received, keep processing.
@@ -82,9 +87,10 @@ function _reset_info(dispatch, city) {
             .then((responseJson) => {
                 const today = responseJson;
                 const city = responseJson.data[0].city_name + ', ' + responseJson.data[0].state_code;
+                AsyncStorage.setItem('city', city);
                 dispatch(actionCreators.set_city(city));
 
-                console.log("Today", today);
+                //console.log("Today", today);
                 dispatch(actionCreators.set_today(today));
                 const geo = {
                     latitude: today.data[0].lat,
@@ -102,7 +108,7 @@ function _reset_info(dispatch, city) {
                     .then((responseJson) => {
                         const forecast = responseJson;
                         dispatch(actionCreators.set_forecast(forecast));
-                        console.log("Forecast", forecast);
+                        //console.log("Forecast", forecast);
                     }).done();
 
                 //Get yesterday's weather informatin.
@@ -110,7 +116,7 @@ function _reset_info(dispatch, city) {
                     .then((responseJson) => {
                         const yesterday = responseJson;
                         dispatch(actionCreators.set_yesterday(yesterday));
-                        console.log("Yesterday", yesterday);
+                        //console.log("Yesterday", yesterday);
                     }).done();
             }).catch(BreakSignal, function () { }).done();
     } catch (e) {
@@ -141,4 +147,61 @@ export function set_risk(value) {
     return (dispatch) => {
         dispatch(actionCreators.set_risk(value));
     }
+}
+
+export function backProcess(city) {
+    try {
+        console.log("1");
+        let key = '&key=d05c52f28c5e48d2afc4284807540cb2'
+        let todayurl = 'https://api.weatherbit.io/v1.0/current/geosearch?city=' + city + '&country=us&units=I&' + key;
+        fetch(todayurl).then((response) => {
+            console.log("2");
+            console.log(response.status);
+            if (response.status !== 204) {
+                dispatch(actionCreators.set_init());
+                return response.json();
+            } else {
+                console.log('Invalid City Name.');
+                throw new BreakSignal();
+            }
+        })
+            .then((responseJson) => {
+                console.log("3"); // Not come
+                const today = responseJson;
+                console.log("Today", today);
+                dispatch(actionCreators.set_today(today));
+                const geo = {
+                    latitude: today.data[0].lat,
+                    longitude: today.data[0].lon,
+                }
+                dispatch(actionCreators.set_geo(geo));
+
+                let startdate = getDate(true);
+                let enddate = getDate(false);
+                let forecasturl = 'https://api.weatherbit.io/v1.0/forecast/3hourly?lat=' + geo.latitude + '&lon=' + geo.longitude + '&units=I&country=us' + key;
+                let yesterdayurl = 'https://api.weatherbit.io/v1.0/history/geosearch?city=' + city + '&start_date=' + startdate + '&end_date=' + enddate + '&country=us&units=I' + key;
+
+                //Get forecast for 5 days
+                fetch(forecasturl).then((response) => response.json())
+                    .then((responseJson) => {
+                        const forecast = responseJson;
+                        dispatch(actionCreators.set_forecast(forecast));
+                        //console.log("Forecast", forecast);
+
+
+                    }).then(() => {
+                        //Get yesterday's weather informatin.
+                        fetch(yesterdayurl).then((response) => response.json())
+                            .then((responseJson) => {
+                                const yesterday = responseJson;
+                                dispatch(actionCreators.set_yesterday(yesterday));
+                                console.log("HEY Yesterday", yesterday);
+                            })
+                    }).done();
+
+            }).catch(BreakSignal, function () { }).done();
+    } catch (e) {
+        console.log(e);
+    }
+
 }
