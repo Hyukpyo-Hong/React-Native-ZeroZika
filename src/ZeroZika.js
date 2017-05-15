@@ -58,9 +58,7 @@ class BackgroundImage extends Component {
 
 class HomeScreen extends Component {
     static navigationOptions = {
-        header: {
-            visible: false,
-        }
+        header: null,
     };
     constructor(props) {
         super(props);

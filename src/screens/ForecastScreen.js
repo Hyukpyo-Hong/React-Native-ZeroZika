@@ -27,24 +27,15 @@ class BackgroundImage extends Component {
 class ForecastScreen extends Component {
   static navigationOptions = {
     title: 'Forecast',
-    header: navigation => ({
-      style: {
-        backgroundColor: 'rgb(47,54,61)'
-      },
-      titleStyle: {
-        color: '#fefefe',
-        fontWeight: '300',
-      },
-      tintColor: '#fefefe'
-    })
+
   }
   constructor(props) {
     super(props);
     this.state = {
       risk_set: this.props.navigation.state.params.risk_set,
       forecast: this.props.navigation.state.params.forecast,
-      yesterday:this.props.navigation.state.params.yesterday,
-      today:this.props.navigation.state.params.today,
+      yesterday: this.props.navigation.state.params.yesterday,
+      today: this.props.navigation.state.params.today,
     };
 
   }
@@ -62,7 +53,7 @@ class ForecastScreen extends Component {
 class Forecast extends Component {
   constructor(props) {
     super(props);
-    
+
     // Combine today + forecast
     var a = this.props.forecast.data
     var b = this.props.today.data;

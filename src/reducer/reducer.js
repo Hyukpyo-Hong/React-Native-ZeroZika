@@ -7,7 +7,6 @@ export const types = {
     SET_CITY: 'SET_CITY',
     SET_TEMP: 'SET_TEMP',//temporary store city name
     SET_TODAY: 'SET_TODAY',
-    SET_TODAY: 'SET_TODAY',
     SET_ALARM: 'SET_ALARM',
     SET_RISK: 'SET_RISK',
     ISLOADING: 'ISLOADING',

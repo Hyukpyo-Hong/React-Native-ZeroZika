@@ -1,6 +1,7 @@
 import types from '../reducer/reducer';
 import { actionCreators } from '../reducer/reducer'
 import getDate from '../model/getDate'
+import { AsyncStorage } from 'react-native'
 
 function _set_info(dispatch) {
     try {
@@ -27,7 +28,7 @@ function _set_info(dispatch) {
                         const forecast = responseJson;
                         dispatch(actionCreators.set_city(city));
                         dispatch(actionCreators.set_forecast(forecast));
-                        console.log("Forecast", city, forecast);
+                        //console.log("Forecast", city, forecast);
                     }).done();
 
                 //Get yesterday's weather informatin.
@@ -35,7 +36,7 @@ function _set_info(dispatch) {
                     .then((responseJson) => {
                         const yesterday = responseJson;
                         dispatch(actionCreators.set_yesterday(yesterday));
-                        console.log("Yesterday", yesterday);
+                        //console.log("Yesterday", yesterday);
                     }).done();
 
                 //Get current weather informatin.
@@ -43,7 +44,7 @@ function _set_info(dispatch) {
                     .then((responseJson) => {
                         const today = responseJson;
                         dispatch(actionCreators.set_today(today));
-                        console.log("Today", today);
+                        //console.log("Today", today);
                     }).done();
             },
             (error) => {
@@ -57,8 +58,13 @@ function _set_info(dispatch) {
         console.log(e);
         dispatch(actionCreators.iserror(true));
     }
+    //Load Alarm Setting from storage
+    let alarm = AsyncStorage.getItem('alarm').then((alarm) => {
+        let _alarm = (alarm=='true');//String -> Bool
+        dispatch(actionCreators.set_alarm(_alarm));
+    })
+
 }
-function BreakSignal() { }
 function _reset_info(dispatch, city) {
     try {
         //Get current weather informatin. If latitude , longitude can be received, keep processing.

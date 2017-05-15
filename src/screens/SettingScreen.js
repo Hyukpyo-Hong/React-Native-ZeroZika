@@ -10,6 +10,7 @@ import {
   Button,
   ActivityIndicator,
   Keyboard,
+  AsyncStorage
 } from 'react-native';
 import { actionCreators } from '../reducer/reducer'
 import Style from '../Style.setting';
@@ -36,16 +37,6 @@ const mapStateToProps = (state) => ({
 class SettingScreen extends Component {
   static navigationOptions = {
     title: 'Setting',
-    header: navigation => ({
-      style: {
-        backgroundColor: 'rgb(47,54,61)'
-      },
-      titleStyle: {
-        color: '#fefefe',
-        fontWeight: '300',
-      },
-      tintColor: '#fefefe'
-    })
   }
   constructor(props) {
     super(props);
@@ -68,6 +59,7 @@ class SettingScreen extends Component {
       dispatch(actionCreators.set_temp(city));
     }
     if (alarm !== this.props.properties.alarm) {
+      AsyncStorage.setItem('alarm',alarm.toString());
       dispatch(actionCreators.set_alarm(alarm));
     }
     Keyboard.dismiss();
